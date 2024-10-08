@@ -1,9 +1,9 @@
-import {useState} from 'react';
+import {useState , useEffect} from 'react';
 import { Button, View, Text,TouchableOpacity,StyleSheet, TextInput, Alert, TouchableHighlight,} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Picker } from '@react-native-picker/picker';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -133,10 +133,20 @@ function AddItem({ navigation }: ScreenProps<'AddItem'>) {
     {id:12,name:'Mignardise',type:'Mignardise'},
     
   ];
+  useEffect(() => {
+    // Load dishList from AsyncStorage when the component mounts
+    AsyncStorage.getItem('dishList').then((storedDishList) => {
+      if (storedDishList) {
+        setDishList(JSON.parse(storedDishList));
+      }
+    });
+  }, []);
 
   const saveItem = () => {
     if (dishName && course && dishDescription) {
-      setDishList([...dishList, { name: dishName, course: course, description: dishDescription }]);
+      const newDishList = [...dishList, { name: dishName, course: course, description: dishDescription }];
+      setDishList(newDishList);
+      AsyncStorage.setItem('dishList', JSON.stringify(newDishList));
       setDishName('');
       setCourse(''); 
       setDishDescription('');
@@ -172,10 +182,13 @@ function AddItem({ navigation }: ScreenProps<'AddItem'>) {
         <Text style={styles.confirmButtonText}>Save</Text>
       </TouchableOpacity>
       
+      <View style={styles.container}>
+      {/* ... */}
       <Text>Dish List:</Text>
       {dishList.map((item, index) => (
         <Text key={index}>{item.name} - Course: {item.course} - Description: {item.description}</Text>
       ))}
+    </View>
     </View>
   );
 }
@@ -183,7 +196,7 @@ function AddItem({ navigation }: ScreenProps<'AddItem'>) {
 function EditItem({ navigation }:ScreenProps<'EditItem'>) {
   return (
     <View>
-
+        
       
       
 
