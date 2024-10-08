@@ -1,5 +1,5 @@
 import {useState, } from 'react';
-import { Button, View, Text,TouchableOpacity,StyleSheet, TextInput, Alert, ImageBackground } from 'react-native';
+import { Button, View, Text,TouchableOpacity,StyleSheet, TextInput, Alert, ImageBackground, ScrollView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Picker } from '@react-native-picker/picker';
@@ -120,30 +120,33 @@ function AddItem({ navigation }: ScreenProps<'AddItem'>) {
   const [dishName, setDishName] = useState('');
   const [course, setCourse] = useState(''); 
   const [dishDescription, setDishDescription] = useState(''); 
-  const[dishPrice,setPrice] = useState(0);
-  const courseArr=[
-    {id:1,name:'Hors D’Oeuvre', type:'Hors D’Oeuvre'},
-    {id:2,name:'Amuse-Bouche', type:'Amuse-Bouche'},
-    {id:3,name:'Soup', type:'Soup'},
-    {id:4,name:'Salad',type:'Salad'},
-    {id:5,name:'Appetiser',type:'Appetiser'},
-    {id:6,name:'Fish',type:'Fish'},
-    {id:7,name:'First Main Course',type:'First Main Course'},
-    {id:8,name:'Palate Cleanser',type:'Palate Cleanser'},
-    {id:9,name:'Second Main Course',type:'Second Main Course'},
-    {id:10,name:'Cheese',type:'Cheese'},
-    {id:11,name:'Dessert',type:'Dessert'},
-    {id:12,name:'Mignardise',type:'Mignardise'},
-    
+  const [dishPrice, setPrice] = useState(0);
+  const [totalCost, setTotalCost] = useState(0); 
+
+  const courseArr = [
+    { id: 1, name: 'Hors D’Oeuvre', type: 'Hors D’Oeuvre' },
+    { id: 2, name: 'Amuse-Bouche', type: 'Amuse-Bouche' },
+    { id: 3, name: 'Soup', type: 'Soup' },
+    { id: 4, name: 'Salad', type: 'Salad' },
+    { id: 5, name: 'Appetiser', type: 'Appetiser' },
+    { id: 6, name: 'Fish', type: 'Fish' },
+    { id: 7, name: 'First Main Course', type: 'First Main Course' },
+    { id: 8, name: 'Palate Cleanser', type: 'Palate Cleanser' },
+    { id: 9, name: 'Second Main Course', type: 'Second Main Course' },
+    { id: 10, name: 'Cheese', type: 'Cheese' },
+    { id: 11, name: 'Dessert', type: 'Dessert' },
+    { id: 12, name: 'Mignardise', type: 'Mignardise' },
   ];
 
   const saveItem = () => {
-    if (dishName && course && dishDescription&& dishPrice) {
-      setDishList([...dishList, { name: dishName, course: course, description: dishDescription, price:dishPrice }]);
+    if (dishName && course && dishDescription && dishPrice) {
+      setDishList([...dishList, { name: dishName, course: course, description: dishDescription, price: dishPrice }]);
       setDishName('');
       setCourse(''); 
       setDishDescription('');
       setPrice(0);
+      const newTotalCost = dishList.reduce((acc, item) => acc + item.price, 0) + dishPrice;
+      setTotalCost(newTotalCost);
       Alert.alert("Success", "Item saved successfully!");
     } else {
       Alert.alert("Error", "Please fill in all fields");
@@ -151,20 +154,21 @@ function AddItem({ navigation }: ScreenProps<'AddItem'>) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View  style={styles.container}>
       <Text style={styles.welcomeText}>Add Menu Item</Text>
       <Text style={styles.h2}>Course:</Text>
-      <View style={ styles.pickerContainer}>
-  <Picker
-    style={styles.picker}
-    selectedValue={course}
-    onValueChange={(itemValue) => setCourse(itemValue)}> 
-    <Picker.Item label="Select a course" value="" />
-     {courseArr.map((item) => (
-       <Picker.Item label={item.name} value={item.name} key={item.id} />
-      ))}
-    </Picker>
-  </View>
+      <View style={styles.pickerContainer}>
+        <Picker
+          style={styles.picker}
+          selectedValue={course}
+          onValueChange={(itemValue) => setCourse(itemValue)}> 
+          <Picker.Item label="Select a course" value="" />
+          {courseArr.map((item) => (
+            <Picker.Item label={item.name} value={item.name} key={item.id} />
+          ))}
+        </Picker>
+      </View>
 
       <Text style={styles.h2}>Dish:</Text>
       <TextInput value={dishName} onChangeText={(text) => setDishName(text)} placeholder='Enter Dish Name' style={styles.TextInput} />
@@ -179,14 +183,14 @@ function AddItem({ navigation }: ScreenProps<'AddItem'>) {
         <Text style={styles.confirmButtonText}>Save</Text>
       </TouchableOpacity>
       
-      <Text>Dish List:</Text>
+      <Text style={styles.h2}>Dish List:</Text>
       {dishList.map((item, index) => (
-        <Text key={index}>{item.name} - Course: {item.course} - Description: {item.description} - Price: {item.price}</Text>
+        <Text key={index} style={styles.h2}>name:{item.name} - Course: {item.course} - Description: {item.description} - Price: {item.price}</Text>
       ))}
 
-add total code
-
+      <Text style={styles.h2}>Total Cost: {totalCost.toString()}</Text> 
     </View>
+    </ScrollView>
   );
 }
 
