@@ -1,9 +1,10 @@
-import {useState} from 'react';
-import { Button, View, Text,TouchableOpacity,StyleSheet, TextInput, Alert, TouchableHighlight,} from 'react-native';
+import {useState, } from 'react';
+import { Button, View, Text,TouchableOpacity,StyleSheet, TextInput, Alert, ImageBackground } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Picker } from '@react-native-picker/picker';
 
+//import image from '';
 
 
 
@@ -89,7 +90,7 @@ function Login({ navigation }:ScreenProps<'Login'>) {
     </View>
   );
 }
-function navigation({ navigation }:ScreenProps<'Nav'>){
+function Nav({ navigation }:ScreenProps<'Nav'>){
   return( 
     <View style={styles.container}>
     
@@ -115,10 +116,11 @@ function Menu({ navigation }:ScreenProps<'Menu'>) {
 }
 
 function AddItem({ navigation }: ScreenProps<'AddItem'>) {
+  const [dishList, setDishList] = useState<{ name: string; course: string; description: string; price: number }[]>([]);
   const [dishName, setDishName] = useState('');
   const [course, setCourse] = useState(''); 
   const [dishDescription, setDishDescription] = useState(''); 
-  const [dishList, setDishList] = useState<{ name: string; course: string; description: string }[]>([]);
+  const[dishPrice,setPrice] = useState(0);
   const courseArr=[
     {id:1,name:'Hors D’Oeuvre', type:'Hors D’Oeuvre'},
     {id:2,name:'Amuse-Bouche', type:'Amuse-Bouche'},
@@ -136,11 +138,12 @@ function AddItem({ navigation }: ScreenProps<'AddItem'>) {
   ];
 
   const saveItem = () => {
-    if (dishName && course && dishDescription) {
-      setDishList([...dishList, { name: dishName, course: course, description: dishDescription }]);
+    if (dishName && course && dishDescription&& dishPrice) {
+      setDishList([...dishList, { name: dishName, course: course, description: dishDescription, price:dishPrice }]);
       setDishName('');
       setCourse(''); 
       setDishDescription('');
+      setPrice(0);
       Alert.alert("Success", "Item saved successfully!");
     } else {
       Alert.alert("Error", "Please fill in all fields");
@@ -169,14 +172,20 @@ function AddItem({ navigation }: ScreenProps<'AddItem'>) {
       <Text style={styles.h2}>Description:</Text>
       <TextInput value={dishDescription} onChangeText={(text) => setDishDescription(text)} placeholder='Enter Dish Description' style={styles.TextInput} />
       
+      <Text style={styles.h2}>Cost:</Text>
+      <TextInput value={dishPrice.toString()} onChangeText={(text) => setPrice(Number(text))} placeholder='Enter Dish price' style={styles.TextInput} />
+
       <TouchableOpacity style={styles.confirmButton} onPress={saveItem}>
         <Text style={styles.confirmButtonText}>Save</Text>
       </TouchableOpacity>
       
       <Text>Dish List:</Text>
       {dishList.map((item, index) => (
-        <Text key={index}>{item.name} - Course: {item.course} - Description: {item.description}</Text>
+        <Text key={index}>{item.name} - Course: {item.course} - Description: {item.description} - Price: {item.price}</Text>
       ))}
+
+add total code
+
     </View>
   );
 }
@@ -211,7 +220,7 @@ function MyStack() {
       <Stack.Screen name="Menu" component={Menu} options={{title:'menue'}}/>
       <Stack.Screen name="AddItem" component={AddItem} options={{title:'Add items'}}/>
       <Stack.Screen name="EditItem" component={EditItem} options={{title:'Edit items'}}/>
-      <Stack.Screen name="Nav" component={navigation} options={{title:'Navigation'}}/>
+      <Stack.Screen name="Nav" component={Nav} options={{title:'Navigation'}}/>
     </Stack.Navigator>
   );
 }
@@ -220,7 +229,9 @@ function MyStack() {
 export default function App() {
   return (
     <NavigationContainer>
-      <MyStack />
+  
+        <MyStack />
+
     </NavigationContainer>
   );
 }
@@ -231,8 +242,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
     marginTop: 50, 
+    width:'100%',
+    padding:50,
     marginLeft: 'auto', 
     marginRight: 'auto', 
+    
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
   },
   welcomeText: {
     width:400,
