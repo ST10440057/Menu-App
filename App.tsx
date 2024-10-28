@@ -23,8 +23,10 @@ function MyStack() {
       <Stack.Screen name="LoginScreen" component={Login} options={{title:'Login'}}/>
       <Stack.Screen name="MenuScreen" component={MenuScreen} options={{title:'menue'}}/>
       <Stack.Screen name="AddItemScreen" component={AddItem} options={{title:'Add items'}}/>
-      <Stack.Screen name="EditItemScreen" component={EditItemScreen} options={{title:'Edit items'}}/>
+      <Stack.Screen name="EditItemScreen" component={EditItemScreen} options={{title:'EditItemScreen'}}/>
       <Stack.Screen name="ChefScreen" component={ChefScreen} options={{title:'Navigation'}}/>
+      
+      
     </Stack.Navigator>
   );
 }

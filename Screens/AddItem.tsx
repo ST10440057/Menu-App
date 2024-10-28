@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, ScrollView, Alert} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../util/stylesheet';
 import  {saveItem, getData} from '../Components/menuItem'; 
@@ -47,20 +47,18 @@ function AddItem({navigation}:AddItemScreenProps) {
     const fetchData = async () => {
       const data = await getData(); // Assuming getData() returns a promise
       setDishList(data);
-    };
-    const calculateTotalCost = () => {
-      const total = dishList.reduce((sum, item) => sum + item.price, 0);
+      
+      const total =dishList ? dishList.reduce((sum, item) => sum + item.price, 0) : 0;
       setTotalCost(total);
     };
+  
 
     fetchData();
-    calculateTotalCost();
   }, [dishList]);
 
-  if (!course || !dishName || !dishDescription || !dishPrice) {
-    return <View><Text>Loading...</Text></View>;
-  }
+ /*
 
+*/
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -89,8 +87,10 @@ function AddItem({navigation}:AddItemScreenProps) {
 
         <TouchableOpacity style={styles.confirmButton} onPress={() => {
 
-          if (course === null || dishName === null || dishDescription === null || dishPrice === null) {
+          if (course != null || dishName != null || dishDescription != null || dishPrice != null) {
           saveItem(dishList);
+          }else{
+            Alert.alert("please enter all fields")
           }
 
         }}>
