@@ -1,16 +1,23 @@
-import { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { 
+  Text, 
+  TouchableOpacity, 
+  TextInput, 
+  Alert, 
+  FlatList, 
+  View, 
+  KeyboardAvoidingView, 
+  Platform, 
+  SafeAreaView 
+} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../util/stylesheet';
-import { getData, saveItem } from '../Components/menuItem';
+import { saveItem, getData } from '../Components/menuItem';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../util/types';
+import { RootStackParamList, DishItem, customers } from '../util/types';
 
-type DishItem = {
-  name: string;
-  course: string;
-  description: string;
-  price: number;
+type EditItemScreenProps = {
+  navigation: StackNavigationProp<RootStackParamList, 'EditItemScreen'>;
 };
 
 const courseArr = [
@@ -28,161 +35,143 @@ const courseArr = [
   { id: 12, name: "Mignardise", type: "Mignardise" },
 ];
 
-type EditItemScreenProps = {
-  navigation: StackNavigationProp<RootStackParamList, 'EditItemScreen'>;
-};
-
-function EditItem({ navigation }: EditItemScreenProps) {
+function EditItemScreen({ navigation }: EditItemScreenProps) {
   const [dishList, setDishList] = useState<DishItem[]>([]);
   const [selectedDish, setSelectedDish] = useState<DishItem | null>(null);
-  const [editedCourse, setEditedCourse] = useState("");
-  const [editedName, setEditedName] = useState("");
-  const [editedDescription, setEditedDescription] = useState("");
-  const [editedPrice, setEditedPrice] = useState(0);
-  const [totalCost, setTotalCost] = useState(0)
+  const [editedDish, setEditedDish] = useState<DishItem | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getData(); // Assuming getData() returns a promise
-      setDishList(data);
-      
-      const total =dishList ? dishList.reduce((sum, item) => sum + item.price, 0) : 0;
-      setTotalCost(total);
-    };
-  
-
     fetchData();
-  }, [dishList]);
+  }, []);
 
-
-  const handleDishSelect = (dish: DishItem) => {
-    setSelectedDish(dish);
-    setEditedCourse(dish.course);
-    setEditedName(dish.name);
-    setEditedDescription(dish.description);
-    setEditedPrice(dish.price);
+  const fetchData = async () => {
+    const data = await getData();
+    if (data) {
+      setDishList(data as DishItem[]);
+    }
   };
 
-  const handleSaveChanges = () => {
-    if (!selectedDish) return;
+  const handleEdit = (dish: DishItem) => {
+    setSelectedDish(dish);
+    setEditedDish({ ...dish });
+  };
 
-    const updatedDishList = dishList.map(dish => {
-      if (dish.name === selectedDish.name) {
-        return {
-          name: editedName,
-          course: editedCourse,
-          description: editedDescription,
-          price: editedPrice
-        };
-      }
-      return dish;
-    });
+  const handleSave = async () => {
+    if (!editedDish) return;
 
-    saveItem(updatedDishList);
+    const updatedDishList = dishList.map(dish =>
+      dish === selectedDish ? editedDish : dish
+    );
+
+    await saveItem(updatedDishList);
     setDishList(updatedDishList);
     setSelectedDish(null);
-    Alert.alert("Success", "Item updated successfully!");
+    setEditedDish(null);
+    Alert.alert('Success', 'Dish updated successfully');
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!selectedDish) return;
 
-    Alert.alert(
-      "Confirm Delete",
-      "Are you sure you want to delete this item?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel"
-        },
-        {
-          text: "Delete",
-          onPress: () => {
-            const updatedDishList = dishList.filter(
-              dish => dish.name !== selectedDish.name
-            );
-            saveItem(updatedDishList);
-            setDishList(updatedDishList);
-            setSelectedDish(null);
-          },
-          style: "destructive"
-        }
-      ]
-    );
+    const updatedDishList = dishList.filter(dish => dish !== selectedDish);
+    await saveItem(updatedDishList);
+    setDishList(updatedDishList);
+    setSelectedDish(null);
+    setEditedDish(null);
+    Alert.alert('Success', 'Dish deleted successfully');
   };
 
-  return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Text style={styles.welcomeText}>Edit Menu Items</Text>
+  const renderItem = ({ item }: { item: DishItem }) => (
+    <TouchableOpacity onPress={() => handleEdit(item)} style={styles.menuItemListEntry}>
+      <Text>{item.name} - {item.course}</Text>
+    </TouchableOpacity>
+  );
 
-        <Text style={styles.h2}>Select Item to Edit:</Text>
-        <View style={styles.pickerContainer}>
+  const renderEditForm = () => {
+    if (!selectedDish || !editedDish) return null;
+
+    return (
+      <View style={styles.dishEditFormContainer}>
+        <Text style={styles.emptyListText}>Edit Dish</Text>
+
+        <Text style={styles.editFormLabel}>Customer:</Text>
+        <View style={styles.customerPickerWrapper}>
           <Picker
-            style={styles.picker}
-            selectedValue={selectedDish?.name}
-            onValueChange={(itemValue) => {
-              const dish = dishList.find(d => d.name === itemValue);
-              if (dish) handleDishSelect(dish);
-            }}>
-            <Picker.Item label="Select a dish" value="" />
-            {dishList.map((dish, index) => (
-              <Picker.Item label={dish.name} value={dish.name} key={index} />
+            style={styles.coursePickerStyle}
+            selectedValue={editedDish.customerId}
+            onValueChange={(itemValue) => setEditedDish({ ...editedDish, customerId: itemValue })}>
+            {customers.map((customer) => (
+              <Picker.Item label={customer.name} value={customer.id} key={customer.id} />
             ))}
           </Picker>
         </View>
 
-        {selectedDish && (
-          <View>
-            <Text style={styles.h2}>Course:</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                style={styles.picker}
-                selectedValue={editedCourse}
-                onValueChange={(itemValue) => setEditedCourse(itemValue)}>
-                {courseArr.map((item) => (
-                  <Picker.Item label={item.name} value={item.name} key={item.id} />
-                ))}
-              </Picker>
-            </View>
+        <Text style={styles.editFormLabel}>Course:</Text>
+        <View style={styles.coursePickerWrapper}>
+          <Picker
+            style={styles.coursePickerStyle}
+            selectedValue={editedDish.course}
+            onValueChange={(itemValue) => setEditedDish({ ...editedDish, course: itemValue })}>
+            {courseArr.map((item) => (
+              <Picker.Item label={item.name} value={item.name} key={item.id} />
+            ))}
+          </Picker>
+        </View>
 
-            <Text style={styles.h2}>Dish Name:</Text>
-            <TextInput
-              value={editedName}
-              onChangeText={setEditedName}
-              style={styles.TextInput}
-            />
+        <Text style={styles.editFormLabel}>Dish:</Text>
+        <TextInput
+          value={editedDish.name}
+          onChangeText={(text) => setEditedDish({ ...editedDish, name: text })}
+          style={styles.dishInputField}
+        />
 
-            <Text style={styles.h2}>Description:</Text>
-            <TextInput
-              value={editedDescription}
-              onChangeText={setEditedDescription}
-              style={styles.TextInput}
-            />
+        <Text style={styles.editFormLabel}>Description:</Text>
+        <TextInput
+          value={editedDish.description}
+          onChangeText={(text) => setEditedDish({ ...editedDish, description: text })}
+          style={styles.dishDescriptionInput}
+          multiline
+        />
 
-            <Text style={styles.h2}>Price:</Text>
-            <TextInput
-              value={editedPrice.toString()}
-              onChangeText={(text) => setEditedPrice(Number(text))}
-              style={styles.TextInput}
-              keyboardType="numeric"
-            />
+        <Text style={styles.editFormLabel}>Cost:</Text>
+        <TextInput
+          value={editedDish.price.toString()}
+          onChangeText={(text) => setEditedDish({ ...editedDish, price: Number(text) })}
+          style={styles.dishPriceInput}
+          keyboardType='numeric'
+        />
 
-            <TouchableOpacity style={styles.confirmButton} onPress={handleSaveChanges}>
-              <Text style={styles.confirmButtonText}>Save Changes</Text>
-            </TouchableOpacity>
+        <TouchableOpacity style={styles.saveChangesButton} onPress={handleSave}>
+          <Text style={styles.saveChangesButtonText}>Save Changes</Text>
+        </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.confirmButton, { backgroundColor: 'red' }]} 
-              onPress={handleDelete}
-            >
-              <Text style={styles.confirmButtonText}>Delete Item</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        <TouchableOpacity style={styles.deleteDishButton} onPress={handleDelete}>
+          <Text style={styles.deleteDishButtonText}>Delete Dish</Text>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.editScreenSafeArea}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.editScreenKeyboardAvoid}
+      >
+        <FlatList
+          ListHeaderComponent={() => (
+            <Text style={styles.welcomeText}>Edit Menu Items</Text>
+          )}
+          data={dishList}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          style={styles.menuItemsList}
+          ListFooterComponent={renderEditForm}
+          contentContainerStyle={styles.menuItemsListContent}
+        />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
-export default EditItem;
+export default EditItemScreen;

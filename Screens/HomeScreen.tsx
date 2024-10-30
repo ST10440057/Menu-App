@@ -16,7 +16,7 @@ function HomeScreen({navigation}:HomeScreenProps) {
       <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome to Christoffel's restaurant</Text>
       
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MenuScreen')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CustomerScreen')}>
         <Text style={styles.buttonText}>Menu</Text>
       </TouchableOpacity>
       

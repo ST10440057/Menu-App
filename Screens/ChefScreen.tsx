@@ -21,6 +21,10 @@ type ChefScreenProps = {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditItemScreen')}>
         <Text style={styles.buttonText}>Edit menu item/s</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.buttonText}>Back home</Text>
+      </TouchableOpacity>
     </View>
   
   

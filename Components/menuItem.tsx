@@ -1,57 +1,51 @@
+// menuItem.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
+import { DishItem } from '../util/types';
 
-type DishItem = {
+interface StorageItem {
+  CustomerID: number;
   name: string;
-  course: string;
   description: string;
   price: number;
-};
+  course: string;
+}
 
-// Define and export the saveItem function
-export const saveItem = async (menuArr: Array<{ name: string, description: string, price: number, course: string }>) => {
-  if (menuArr.length > 0) {
-    try {
-      const jsonValue = JSON.stringify(menuArr);
-      await AsyncStorage.setItem('@menu-items', jsonValue);
-    } catch (e) {
-      // Handle the error
-      Alert.alert("Error saving data: " + e);
-    }
+
+export const saveItem = async (items: DishItem[]): Promise<void> => {
+  try {
+    // Map DishItem[] to StorageItem[] to maintain compatibility
+    const mappedItems = items.map(item => ({
+      CustomerID: item.customerId,
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      course: item.course
+    }));
+    
+    await AsyncStorage.setItem('menuItems', JSON.stringify(mappedItems));
+  } catch (error) {
+    console.error('Error saving items:', error);
+    throw error;
   }
 };
 
-
-export const getData = async () => {
-    let tempArr: DishItem[] = []; // Initialize the array
-    /*
-    try {
-        const jsonValue = await AsyncStorage.getItem('my-key');
-        if (jsonValue != null) {
-            menuArr = JSON.parse(jsonValue); // Populate the array with loaded data
-        }
-        return menuArr; // Return the populated array
-      
-    } catch (e) {
-      // Handle the error
-      console.error("Error loading data: ", e);
-      return [];
+export const getData = async (): Promise<DishItem[] | null> => {
+  try {
+    const jsonValue = await AsyncStorage.getItem('menuItems');
+    if (jsonValue != null) {
+      // Convert StorageItem[] back to DishItem[]
+      const storageItems: StorageItem[] = JSON.parse(jsonValue);
+      return storageItems.map(item => ({
+        customerId: item.CustomerID,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        course: item.course
+      }));
     }
-    */
-    try {
-      const jsonValue = await AsyncStorage.getItem('@menu-items');
-      if (jsonValue != null) {
-          tempArr = JSON.parse(jsonValue); // Populate the array with loaded data
-      } else {
-        tempArr = []; // If no data is found, return an empty array
-        //Alert.alert('Error retrieving  data');
-
-      }
-
-  } catch (e) {
-    // Handle the error
-    Alert.alert("Error loading data: " + e);
+    return null;
+  } catch (error) {
+    console.error('Error getting data:', error);
+    throw error;
   }
-  return tempArr; 
 };
-
