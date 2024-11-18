@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../util/types';
 import styles from '../util/stylesheet';
@@ -10,7 +10,11 @@ type CustomerScreenProps = {
 
 function CustomerScreen({ navigation }: CustomerScreenProps) {
   return (
-    <View style={styles.container}>
+    <ImageBackground 
+    source={require('../assets/Background.jpg')}
+    resizeMode="cover"
+     style={styles.container}
+   >
       <TouchableOpacity 
         style={styles.button} 
         onPress={() => navigation.navigate('MenuScreen', { customerId: 1 })}
@@ -31,7 +35,7 @@ function CustomerScreen({ navigation }: CustomerScreenProps) {
       >
         <Text style={styles.buttonText}>Customer 3</Text>
       </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 }
 

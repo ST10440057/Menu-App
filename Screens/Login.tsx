@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, ImageBackground} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../util/types';
 import styles from '../util/stylesheet';
@@ -25,7 +25,11 @@ const Login: React.FC<LoginScreenProps> = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ImageBackground 
+ source={require('../assets/Background.jpg')}
+ resizeMode="cover"
+  style={styles.container}
+>
       <View style={styles.loginContainer}>
         <Text style={styles.title}>Chef Login</Text>
         <View style={styles.inputGroup}>
@@ -51,7 +55,7 @@ const Login: React.FC<LoginScreenProps> = ({ navigation }) => {
           <Text style={styles.continueButtonText}>continue</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 

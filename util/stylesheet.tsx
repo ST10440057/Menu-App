@@ -3,18 +3,31 @@ const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 
-    container: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        marginTop: 50, 
-        width:'100%',
-        padding:50,
-        marginLeft: 'auto', 
-        marginRight: 'auto', 
-        
-      },
+
+  container: {
+    flex: 1,
+    paddingTop: 50,
+    justifyContent: 'flex-start', // Changed from 'flex-start' to 'center'
+    alignItems: 'center',
+    backgroundColor: 'transparent', // Make background transparent
+    width: '100%',
+   
+
+
+},
+pickerContainer: {
+  marginVertical: 10,
+  borderWidth: 1,
+  borderColor: '#ddd',
+  borderRadius: 5,
+  backgroundColor: 'rgba(255,255,255,1)',
+},
+pickerInput: {
+  fontSize: 16,
+  paddingVertical: 12,
+  paddingHorizontal: 10,
+  color: 'black',
+},
       image: {
         flex: 1,
         justifyContent: 'center',
@@ -22,7 +35,7 @@ const styles = StyleSheet.create({
       welcomeText: {
         width:400,
         padding:50,
-        marginTop:20,
+        marginTop:0,
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 30,
@@ -35,6 +48,19 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
+      },
+      h3:{
+        width:400,
+        height:20,
+
+        marginTop:0,
+        fontSize: 15,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        backgroundColor:'#BEBEBE',
+        borderRadius:10,
+        alignSelf: 'center',
+
       },
       button: {
         backgroundColor: '#d3d3d3',
@@ -122,12 +148,7 @@ const styles = StyleSheet.create({
     confirmButtonText: {
       fontWeight: 'bold',
     },
-    pickerContainer:{
-      borderRadius:20,
-      backgroundColor:'dodgerblue',
-      margin:10,
-      overflow:'hidden',
-    },
+  
     picker:{
       width:400,
       height: 70,
@@ -195,6 +216,12 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       textAlign: 'right',
       color: '#2ecc71',
+      backgroundColor: 'white', // Light gray background
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      borderRadius: 10, // Added border radius
+      alignSelf: 'flex-end', // Align to the right side
+      marginRight: 16, // Add some margin from the right edge
     },
     emptyListContainer: {
       padding: 32,

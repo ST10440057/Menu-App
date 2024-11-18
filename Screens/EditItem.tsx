@@ -8,7 +8,7 @@ import {
   View, 
   KeyboardAvoidingView, 
   Platform, 
-  SafeAreaView 
+  ImageBackground
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../util/stylesheet';
@@ -153,7 +153,12 @@ function EditItemScreen({ navigation }: EditItemScreenProps) {
   };
 
   return (
-    <SafeAreaView style={styles.editScreenSafeArea}>
+    
+    <ImageBackground 
+ source={require('../assets/Background.jpg')}
+ resizeMode="cover"
+  style={styles.container}
+>
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.editScreenKeyboardAvoid}
@@ -170,7 +175,7 @@ function EditItemScreen({ navigation }: EditItemScreenProps) {
           contentContainerStyle={styles.menuItemsListContent}
         />
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ImageBackground>
   );
 }
 

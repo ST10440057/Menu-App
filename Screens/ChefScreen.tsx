@@ -1,6 +1,6 @@
 
 import styles from '../util/stylesheet';
-import { View, Text, TouchableOpacity, } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../util/types';
 
@@ -12,7 +12,11 @@ type ChefScreenProps = {
 
  function ChefScreen( { navigation }:ChefScreenProps ){
     return( 
-      <View style={styles.container}>
+      <ImageBackground 
+ source={require('../assets/Background.jpg')}
+ resizeMode="cover"
+  style={styles.container}
+>
       
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddItemScreen')}>
         <Text style={styles.buttonText}>Add menu item/s</Text>
@@ -25,7 +29,7 @@ type ChefScreenProps = {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
         <Text style={styles.buttonText}>Back home</Text>
       </TouchableOpacity>
-    </View>
+    </ImageBackground>
   
   
     )

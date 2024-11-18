@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, ScrollView, Alert} from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, ScrollView, Alert, ImageBackground} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../util/stylesheet';
 import  {saveItem, getData} from '../Components/menuItem'; 
@@ -49,10 +49,14 @@ function AddItem({navigation}:AddItemScreenProps) {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
+      <ImageBackground 
+ source={require('../assets/Background.jpg')}
+ resizeMode="cover"
+  style={styles.container}
+>
         <Text style={styles.welcomeText}>Add Menu Item</Text>
         
-        <Text style={styles.h2}>Customer:</Text>
+        <Text style={styles.h3}>Customer:</Text>
         <View style={styles.pickerContainer}>
   <Picker
     style={styles.picker}
@@ -65,7 +69,7 @@ function AddItem({navigation}:AddItemScreenProps) {
   </Picker>
 </View>
 
-        <Text style={styles.h2}>Course:</Text>
+        <Text style={styles.h3}>Course:</Text>
         <View style={styles.pickerContainer}>
           <Picker
             style={styles.picker}
@@ -78,7 +82,7 @@ function AddItem({navigation}:AddItemScreenProps) {
           </Picker>
         </View>
 
-        <Text style={styles.h2}>Dish:</Text>
+        <Text style={styles.h3}>Dish:</Text>
         <TextInput 
           value={dishName} 
           onChangeText={(text) => setDishName(text)} 
@@ -86,7 +90,7 @@ function AddItem({navigation}:AddItemScreenProps) {
           style={styles.TextInput} 
         />
         
-        <Text style={styles.h2}>Description:</Text>
+        <Text style={styles.h3}>Description:</Text>
         <TextInput 
           value={dishDescription} 
           onChangeText={(text) => setDishDescription(text)} 
@@ -94,7 +98,7 @@ function AddItem({navigation}:AddItemScreenProps) {
           style={styles.TextInput} 
         />
         
-        <Text style={styles.h2}>Cost:</Text>
+        <Text style={styles.h3}>Cost:</Text>
         <TextInput 
           value={dishPrice.toString()} 
           onChangeText={(text) => setPrice(Number(text))} 
@@ -137,19 +141,11 @@ function AddItem({navigation}:AddItemScreenProps) {
           }}>
           <Text style={styles.confirmButtonText}>Save</Text>
         </TouchableOpacity>
-        
-        <Text style={styles.h2}>Dish List:</Text>
-        {dishList.map((item, index) => {
-          const customerName = customers.find(c => c.id === item.customerId)?.name || "Unknown customer";
-          return (
-            <Text key={index} style={styles.h2}>
-              Customer: {customerName} - Name: {item.name} - Course: {item.course} - Description: {item.description} - Price: R{item.price}
-            </Text>
-          );
-        })}
+      
+      
 
-        <Text style={styles.h2}>Total Cost: R{totalCost.toString()}</Text> 
-      </View>
+         
+      </ImageBackground>
     </ScrollView>
   );
 }
