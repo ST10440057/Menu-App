@@ -64,7 +64,11 @@ Ensure all dependencies are properly installed by running `npm install` in the p
 ## Video
 
 
-https://github.com/user-attachments/assets/2ce1e2e9-8494-4fcc-a29d-e7752f6948e2
+
+
+https://github.com/user-attachments/assets/bcc271c0-5f3c-4eaa-aa7d-894dbc995bd9
+
+
 
 
 # Changelog
@@ -75,6 +79,12 @@ https://github.com/user-attachments/assets/2ce1e2e9-8494-4fcc-a29d-e7752f6948e2
 - Implement EditItem functionality for modifying existing menu items
 - Add user roles and permissions for different staff members
 - Integrate with a backend database for persistent storage
+
+- ## [0.2.1] - 2024-11-19
+
+###Added 
+- styling and css
+- filter system for menu
 
 ## [0.2.0] - 2024-10-08
 
@@ -113,12 +123,14 @@ https://github.com/user-attachments/assets/2ce1e2e9-8494-4fcc-a29d-e7752f6948e2
 ### Changed
 - Updated project dependencies to latest versions
 
-## [0.0.1] - 2024-09-28
+
 
 ### Added
 - Initial project setup
 - Created project repository
 - Added README with basic project description
+
+##[0.0]
 ## refrences
 
 - The IIE.2024.Mobile App Scripting [MAST5112 Module Manual]. The Idnependent Instatute of Education: unpublished
